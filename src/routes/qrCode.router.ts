@@ -13,7 +13,7 @@ qrCodeRouter.put("/validate", async (req: Request, res: Response) => {
     const { id, qrCode }: QrCodeProps = req.body;
 
     try {
-        const qrCodeRecord = await pool('qrcodes')
+        const qrCodeRecord = await pool('info')
             .select('qr_code', 'access')
             .where('id', id)
             .first();
@@ -22,12 +22,12 @@ qrCodeRouter.put("/validate", async (req: Request, res: Response) => {
             res.status(404).json({ message: "QR code record not found for this user." });
 
         if (qrCode === qrCodeRecord.qr_code) {
-            await pool('qrcodes')
+            await pool('info')
                 .where('id', id)
                 .update({ access: 'GRANTED' });
             res.status(200).json({ message: "QR code validated. Access granted." });
         } else {
-            await pool('qrcodes')
+            await pool('info')
                 .where('id', id)
                 .update({ access: 'DENIED' });
             res.status(400).json({ message: "QR code does not match. Access denied." });
@@ -42,7 +42,7 @@ qrCodeRouter.get("/get-access-status/:id", async (req: Request, res: Response) =
     const { id } = req.params;
 
     try {
-        const qrCodeRecord = await pool('qrcodes')
+        const qrCodeRecord = await pool('info')
         .select('access')
         .where('id', id)
         .first();
@@ -62,7 +62,7 @@ qrCodeRouter.get("/get-user-info/:id", async (req: Request, res: Response) => {
     const { id } = req.params;
 
     try {
-        const user = await pool('users')
+        const user = await pool('info')
             .select('name', 'surname')
             .where('id', id)
             .first();

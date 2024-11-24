@@ -1,5 +1,5 @@
 CREATE TABLE users (
-    id SERIAL PRIMARY KEY, -- Automatically generated ID
+    id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     surname VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL
@@ -14,5 +14,14 @@ CREATE TYPE access_status AS ENUM ('GRANTED', 'DENIED', 'UNDEFINED');
 CREATE TABLE qrcodes (
     id INT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
     qr_code VARCHAR(255) NOT NULL,
+    access access_status DEFAULT 'UNDEFINED'
+);
+
+CREATE TABLE info (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    surname VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+	qr_code VARCHAR(255) NOT NULL,
     access access_status DEFAULT 'UNDEFINED'
 );

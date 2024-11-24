@@ -14,7 +14,7 @@ authRouter.post("/sign-in", async (req: Request, res: Response) => {
     const { name, password }: SignInProps = req.body;
 
     try {
-        const user = await pool('users')
+        const user = await pool('info')
             .select('id', 'password')
             .where('name', name)
             .first();
@@ -41,11 +41,11 @@ authRouter.post("/sign-up", async (req: Request, res: Response) => {
     try {
         const hashedPassword = await bcrypt.hash(password, 10);  // Salt rounds = 10 (you can adjust it)
         await pool.transaction(async (trx) => {
-            const [user] = await trx("users")
-            .insert({ name, surname,  password: hashedPassword })
+            const [user] = await trx("info")
+            .insert({ name, surname, password: hashedPassword, qr_code: qrCode })
             .returning("id");
     
-            await trx("qrcodes").insert({ id: user.id, qr_code: qrCode });
+            // await trx("info").insert({ id: user.id,  });
             res.status(201).json({ message: "User successfully signed up!", userId: user.id });
       });
     } catch (error) {
